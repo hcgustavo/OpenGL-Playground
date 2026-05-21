@@ -1,5 +1,6 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <stb_image.h>
 
 #include <iostream>
 
@@ -96,6 +97,14 @@ int main()
     }
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
+
+    // load image to be used as the texture
+    int width, height, nrChannels;
+    unsigned char* imageData = stbi_load("Resources/mtg.jpg", &width, &height, &nrChannels, 0);
+    if (imageData == NULL) {
+        std::cout << "Failed to load texture" << std::endl;
+        return -1;
+    }
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
