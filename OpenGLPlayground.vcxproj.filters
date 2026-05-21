@@ -19,6 +19,9 @@
     <Filter Include="Arquivos de Origem\Shaders">
       <UniqueIdentifier>{2edfbf2d-980b-4479-824f-f985d4cc4265}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Arquivos de Origem\Textures">
+      <UniqueIdentifier>{84629ffc-1eed-4d7a-8e04-6ef544836253}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glad.c">
@@ -48,9 +51,18 @@
     <ClCompile Include="ShadersEx03.cpp">
       <Filter>Arquivos de Origem\Shaders</Filter>
     </ClCompile>
+    <ClCompile Include="Textures.cpp">
+      <Filter>Arquivos de Origem\Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="stb_image.cpp">
+      <Filter>Arquivos de Origem</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Shader.h">
+      <Filter>Arquivos de Cabeçalho</Filter>
+    </ClInclude>
+    <ClInclude Include="stb_image.h">
       <Filter>Arquivos de Cabeçalho</Filter>
     </ClInclude>
   </ItemGroup>
