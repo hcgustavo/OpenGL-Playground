@@ -39,6 +39,15 @@
     <ClCompile Include="Shaders.cpp">
       <Filter>Arquivos de Origem\Shaders</Filter>
     </ClCompile>
+    <ClCompile Include="ShadersEx01.cpp">
+      <Filter>Arquivos de Origem\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="ShadersEx02.cpp">
+      <Filter>Arquivos de Origem\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="ShadersEx03.cpp">
+      <Filter>Arquivos de Origem\Shaders</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Shader.h">
