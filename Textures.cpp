@@ -13,21 +13,25 @@ const unsigned int SCR_HEIGHT = 600;
 
 const char* vertexShaderSource = "#version 330 core\n"
 "layout (location = 0) in vec3 aPos;\n"
-"layout (location = 1) in vec2 aTexCoord;\n"
+"layout (location = 1) in vec3 aColor;\n"
+"layout (location = 2) in vec2 aTexCoord;\n"
+"out vec4 ourColor;\n"
 "out vec2 TexCoord;\n"
 "void main()\n"
 "{\n"
 "   gl_Position = vec4(aPos, 1.0);\n"
+"   ourColor = vec4(aColor, 1.0);\n"
 "   TexCoord = aTexCoord;\n"
 "}\0";
 
 const char* fragmentShaderSource = "#version 330 core\n"
+"in vec4 ourColor;\n"
 "in vec2 TexCoord;\n"
 "out vec4 FragColor;\n"
 "uniform sampler2D ourTexture;\n"
 "void main()\n"
 "{\n"
-"   FragColor = texture(ourTexture, TexCoord);\n"
+"   FragColor = texture(ourTexture, TexCoord) * ourColor;\n"
 "}\n\0";
 
 int main()
@@ -116,11 +120,11 @@ int main()
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
     float vertices[] = {
-        // vertex positions         // texture coordinates
-        -0.5f,   0.9f,  0.0f,       0.0f, 1.0f,
-         0.5f,   0.9f,  0.0f,       1.0f, 1.0f,
-         0.5f,  -0.9f,  0.0f,       1.0f, 0.0f,
-		-0.5f,  -0.9f,  0.0f,       0.0f, 0.0f
+        // vertex positions         // vertex colors             // texture coordinates
+        -0.5f,   0.9f,  0.0f,       1.0f, 0.0f, 0.3f,            0.0f, 1.0f,
+         0.5f,   0.9f,  0.0f,       0.0f, 1.0f, 0.0f,            1.0f, 1.0f,
+         0.5f,  -0.9f,  0.0f,       0.6f, 0.0f, 1.0f,            1.0f, 0.0f,
+		-0.5f,  -0.9f,  0.0f,       1.0f, 0.7f, 0.0f,            0.0f, 0.0f
     };
 
     unsigned int indices[] = {
@@ -142,11 +146,14 @@ int main()
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3*sizeof(float)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3*sizeof(float)));
     glEnableVertexAttribArray(1);
+
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6*sizeof(float)));
+    glEnableVertexAttribArray(2);
 
     // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
     glBindBuffer(GL_ARRAY_BUFFER, 0);
