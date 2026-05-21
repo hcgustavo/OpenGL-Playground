@@ -13,15 +13,21 @@ const unsigned int SCR_HEIGHT = 600;
 
 const char* vertexShaderSource = "#version 330 core\n"
 "layout (location = 0) in vec3 aPos;\n"
+"layout (location = 1) in vec2 aTexCoord;\n"
+"out vec2 TexCoord;\n"
 "void main()\n"
 "{\n"
-"   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+"   gl_Position = vec4(aPos, 1.0);\n"
+"   TexCoord = aTexCoord;\n"
 "}\0";
+
 const char* fragmentShaderSource = "#version 330 core\n"
+"in vec2 TexCoord;\n"
 "out vec4 FragColor;\n"
+"uniform sampler2D ourTexture;\n"
 "void main()\n"
 "{\n"
-"   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+"   FragColor = texture(ourTexture, TexCoord);\n"
 "}\n\0";
 
 int main()
@@ -99,6 +105,7 @@ int main()
     glDeleteShader(fragmentShader);
 
     // load image to be used as the texture
+    stbi_set_flip_vertically_on_load(true);
     int width, height, nrChannels;
     unsigned char* imageData = stbi_load("Resources/mtg.jpg", &width, &height, &nrChannels, 0);
     if (imageData == NULL) {
@@ -109,10 +116,11 @@ int main()
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
     float vertices[] = {
-        -0.5f,   0.9f,  0.0f,
-         0.5f,   0.9f,  0.0f,
-         0.5f,  -0.9f,  0.0f,
-        -0.5f,  -0.9f,  0.0f
+        // vertex positions         // texture coordinates
+        -0.5f,   0.9f,  0.0f,       0.0f, 1.0f,
+         0.5f,   0.9f,  0.0f,       1.0f, 1.0f,
+         0.5f,  -0.9f,  0.0f,       1.0f, 0.0f,
+		-0.5f,  -0.9f,  0.0f,       0.0f, 0.0f
     };
 
     unsigned int indices[] = {
@@ -134,8 +142,11 @@ int main()
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
+
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3*sizeof(float)));
+    glEnableVertexAttribArray(1);
 
     // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -147,6 +158,20 @@ int main()
 
     // uncomment this call to draw in wireframe polygons.
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+    unsigned int texture;
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, imageData);
+	glGenerateMipmap(GL_TEXTURE_2D);
+
+    stbi_image_free(imageData);
+
+
 
     // render loop
     // -----------
