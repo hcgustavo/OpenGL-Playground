@@ -22,6 +22,9 @@
     <Filter Include="Arquivos de Origem\Textures">
       <UniqueIdentifier>{84629ffc-1eed-4d7a-8e04-6ef544836253}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Arquivos de Origem\Transformations">
+      <UniqueIdentifier>{662ec835-ce79-4631-b135-f58d3bb9b91e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glad.c">
@@ -65,6 +68,15 @@
     </ClCompile>
     <ClCompile Include="Textures03.cpp">
       <Filter>Arquivos de Origem\Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="Transformations.cpp">
+      <Filter>Arquivos de Origem\Transformations</Filter>
+    </ClCompile>
+    <ClCompile Include="TransformationsEx01.cpp">
+      <Filter>Arquivos de Origem\Transformations</Filter>
+    </ClCompile>
+    <ClCompile Include="TransformationsEx02.cpp">
+      <Filter>Arquivos de Origem\Transformations</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
