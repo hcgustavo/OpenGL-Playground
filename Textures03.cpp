@@ -30,9 +30,10 @@ const char* fragmentShaderSource = "#version 330 core\n"
 "out vec4 FragColor;\n"
 "uniform sampler2D texture1;\n"
 "uniform sampler2D texture2;\n"
+"uniform float amount;\n"
 "void main()\n"
 "{\n"
-"   FragColor = mix( texture(texture1, TexCoord), texture(texture2, TexCoord), 0.3 );\n"
+"   FragColor = mix( texture(texture1, TexCoord), texture(texture2, TexCoord), amount );\n"
 "}\n\0";
 
 int main()
@@ -117,7 +118,7 @@ int main()
         -0.5f,   0.9f,  0.0f,       1.0f, 0.0f, 0.3f,            0.0f, 1.0f,
          0.5f,   0.9f,  0.0f,       0.0f, 1.0f, 0.0f,            1.0f, 1.0f,
          0.5f,  -0.9f,  0.0f,       0.6f, 0.0f, 1.0f,            1.0f, 0.0f,
-		-0.5f,  -0.9f,  0.0f,       1.0f, 0.7f, 0.0f,            0.0f, 0.0f
+        -0.5f,  -0.9f,  0.0f,       1.0f, 0.7f, 0.0f,            0.0f, 0.0f
     };
 
     unsigned int indices[] = {
@@ -142,10 +143,10 @@ int main()
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3*sizeof(float)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6*sizeof(float)));
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
     glEnableVertexAttribArray(2);
 
     // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
@@ -208,6 +209,8 @@ int main()
     glUniform1i(glGetUniformLocation(shaderProgram, "texture1"), 0);
     glUniform1i(glGetUniformLocation(shaderProgram, "texture2"), 1);
 
+    float amount = 0.0f;
+
 
 
     // render loop
@@ -217,6 +220,19 @@ int main()
         // input
         // -----
         processInput(window);
+
+        if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
+            amount += 0.0001f;
+            if (amount > 1) {
+                amount = 1.0f;
+            }
+        }
+        else if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
+            amount -= 0.0001f;
+            if (amount < 0) {
+                amount = 0.0f;
+            }
+        }
 
         // render
         // ------
@@ -230,6 +246,7 @@ int main()
 
         // draw our first triangle
         glUseProgram(shaderProgram);
+        glUniform1f(glGetUniformLocation(shaderProgram, "amount"), amount);
         glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         // glBindVertexArray(0); // no need to unbind it every time 
